@@ -1,4 +1,5 @@
 <?php
+
 /* <one line to give the program's name and a brief idea of what it does.>
  * Copyright (C) 2015 ATM Consulting <support@atm-consulting.fr>
  *
@@ -28,6 +29,7 @@
  */
 class Actionsmulticlone
 {
+
 	/**
 	 * @var array Hook results. Propagated to $hookmanager->resArray for later reuse
 	 */
@@ -48,6 +50,7 @@ class Actionsmulticlone
 	 */
 	public function __construct()
 	{
+		
 	}
 
 	/**
@@ -61,28 +64,28 @@ class Actionsmulticlone
 	 */
 	function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-		$error = 0; // Error counter
-		$myvalue = 'test'; // A result value
 
-		print_r($parameters);
-		echo "action: " . $action;
-		print_r($object);
 
-		if (in_array('somecontext', explode(':', $parameters['context'])))
+		if (in_array('ordercard', explode(':', $parameters['context'])) || in_array('invoicecard', explode(':', $parameters['context'])) || in_array('propalcard', explode(':', $parameters['context'])))
 		{
-		  // do something only for the context 'somecontext'
-		}
-
-		if (! $error)
-		{
-			$this->results = array('myreturn' => $myvalue);
-			$this->resprints = 'A text to show';
-			return 0; // or return 1 to replace standard code
-		}
-		else
-		{
-			$this->errors[] = 'Error message';
-			return -1;
+			//var_dump($action);exit;
+			// Pour empêcher de remplir le form confirm de manière à exécuter le notre
+			if ($action === 'clone')
+				$action = 'multiclone';
 		}
 	}
+
+	function formConfirm($parameters, &$object, &$action, $hookmanager)
+	{
+		dol_include_once('multiclone/class/multiclone.class.php');
+		if (in_array('ordercard', explode(':', $parameters['context']))|| in_array('invoicecard', explode(':', $parameters['context']))|| in_array('propalcard', explode(':', $parameters['context'])))
+		{
+			
+			if($action == 'multiclone'){
+					print multiclone::getFormConfirmClone($object);
+			}
+			
+		}
+	}
+
 }
