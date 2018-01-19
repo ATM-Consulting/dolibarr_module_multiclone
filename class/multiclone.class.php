@@ -268,8 +268,8 @@ class multiclone extends SeedObject
 		global $langs, $db;
 		$langs->load('multiclone@multiclone');
 		$form = new Form($db);
-		if ($object->element == 'commande')
-		{
+//		if ($object->element == 'commande')
+//		{
 			$elem = "Order";
 			$formquestion = array(
 				// 'text' => $langs->trans("ConfirmClone"),
@@ -279,8 +279,8 @@ class multiclone extends SeedObject
 				array('type' => 'text', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => 0),
 				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company(GETPOST('socid', 'int'), 'socid', '(s.client=1 OR s.client=3)', '', 0, 0, array(), 0, 'minwidth300')));
 			// Paiement incomplet. On demande si motif = escompte ou autre
-		}
-		else
+//		}
+		/*else
 		{
 			if($object->element == 'facture')$elem="Invoice";
 			if($object->element == 'propal')$elem="Propal";
@@ -290,14 +290,14 @@ class multiclone extends SeedObject
 				// 1),
 				array('type' => 'text', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => 1),
 				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company(GETPOST('socid', 'int'), 'socid', '(s.client=1 OR s.client=3)', '', 0, 0, array(), 0, 'minwidth300')));
-		}
+		}*/
 		// Paiement incomplet. On demande si motif = escompte ou autre
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans("Clone$elem"), $langs->trans("ConfirmClone$elem", $object->ref), 'confirm_clone', $formquestion, 'yes', 1);
 
 		return $formconfirm;
 	}
 
-	static function createFromCloneCustom($socid = 0, $object)
+	static function createFromCloneCustom($socid = 0, $object,$frequency=0)
 	{
 		global $user, $hookmanager;
 
@@ -339,11 +339,12 @@ class multiclone extends SeedObject
 		$object->user_author_id = $user->id;
 		$object->user_valid = '';
 		$object->date = dol_now();
-		$object->date_commande = dol_now();
+		if($object->element == 'facture' && ! empty($frequency))$object->date = strtotime("+$frequency month", $objFrom->date);
+		if($object->element == 'commande')$object->date_commande = dol_now();
 		$object->date_creation = '';
 		$object->date_validation = '';
 		$object->ref_client = '';
-
+		
 		// Create clone
 		$result = $object->create($user);
 		$object->add_object_linked($object->element, $objFrom->id);
@@ -365,6 +366,21 @@ class multiclone extends SeedObject
 			$object->db->rollback();
 			return -1;
 		}
+	}
+	
+	static function setFactureDate($objFrom,$object,$frequency)
+	{
+		global $db;
+		$old_date_lim_reglement = $objFrom->date_lim_reglement;
+		
+	    $object->date=strtotime("+$frequency month", $objFrom->date);
+		$new_date_lim_reglement = $object->calculate_date_lim_reglement();
+		if ($new_date_lim_reglement > $old_date_lim_reglement) $object->date_lim_reglement = $new_date_lim_reglement;
+		if ($object->date_lim_reglement < $object->date) $object->date_lim_reglement = $object->date;
+		
+		$sql = 'UPDATE '.MAIN_DB_PREFIX.'facture SET datef="'.$db->idate($object->date).'", date_lim_reglement="'. $db->idate($object->date_lim_reglement).'" WHERE rowid='.$object->id;
+		$resql = $db->query($sql);
+		
 	}
 
 }

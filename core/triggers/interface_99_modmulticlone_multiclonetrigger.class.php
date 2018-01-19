@@ -121,39 +121,39 @@ class Interfacemulticlonetrigger
 		// Put here code you want to execute when a Dolibarr business events occurs.
 		// Data and type of action are stored into $object and $action
 		// Users
-		if ($action == 'ORDER_CLONE')
+		if ($action == 'ORDER_CLONE' || $action == 'PROPAL_CLONE'||($action == 'BILL_CLONE') )
 		{
-			global $user;
+			global $user,$db;
 			dol_include_once('/multiclone/class/multiclone.class.php');
+			
 			$qty = GETPOST('cloneqty');
 			$frequency = GETPOST('frequency');
 			$socid = GETPOST('socid');
 
-			$object->set_date_livraison($user, strtotime("+$frequency month", $object->date_livraison));
+			if(!empty($object->date_livraison))$object->set_date_livraison($user, strtotime("+$frequency month", $object->date_livraison));
+			if($object->element == 'facture' ){
+				$id_source = GETPOST('id');
+				$objFrom = new Facture($db);
+				$objFrom->fetch($id_source);
+				multiclone::setFactureDate($objFrom,$object,$frequency);
+			}
+			
 			if (($qty > 1))
 			{
 				for ($i = 1; $i < $qty; $i++)
 				{
-					$object->date_livraison = strtotime("+$frequency month", $object->date_livraison);
-					multiclone::createFromCloneCustom($socid, $object);
+					
+					if($object->element == 'facture'){
+						multiclone::createFromCloneCustom($socid, $object,$frequency);
+					}else {
+						if(!empty($object->date_livraison))$object->date_livraison = strtotime("+$frequency month", $object->date_livraison);
+						multiclone::createFromCloneCustom($socid, $object);
+					}
+					
 				}
 			}
 		}
-		else if (($action == 'BILL_CLONE') || $action == 'PROPAL_CLONE')
-		{
-			global $user;
-			dol_include_once('/multiclone/class/multiclone.class.php');
-			$qty = GETPOST('cloneqty');
-			$socid = GETPOST('socid');
-
-			if (($qty > 1))
-			{
-				for ($i = 1; $i < $qty; $i++)
-				{
-					multiclone::createFromCloneCustom($socid, $object);
-				}
-			}
-		}
+	
 
 		return 0;
 	}
