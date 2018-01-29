@@ -124,6 +124,7 @@ class Interfacemulticlonetrigger
 		if ($action == 'ORDER_CLONE' || $action == 'PROPAL_CLONE'||($action == 'BILL_CLONE') )
 		{
 			global $user,$db;
+			
 			dol_include_once('/multiclone/class/multiclone.class.php');
 			
 			$qty = GETPOST('cloneqty');
@@ -144,13 +145,19 @@ class Interfacemulticlonetrigger
 				{
 					
 					if($object->element == 'facture'){
-						multiclone::createFromCloneCustom($socid, $object,$frequency);
+						$ret = multiclone::createFromCloneCustom($socid, $object,$frequency);
 					}else {
 						if(!empty($object->date_livraison))$object->date_livraison = strtotime("+$frequency month", $object->date_livraison);
-						multiclone::createFromCloneCustom($socid, $object);
+						$ret = multiclone::createFromCloneCustom($socid, $object);
 					}
 					
 				}
+			}
+			if($ret > 0){
+				$redirect = str_replace('card.php','list.php?socid='.$socid,$_SERVER["PHP_SELF"]);
+				$db->commit();
+				Header('Location: '.$redirect);
+				exit;
 			}
 		}
 	
