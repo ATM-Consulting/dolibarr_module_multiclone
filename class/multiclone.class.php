@@ -299,7 +299,7 @@ class multiclone extends SeedObject
 
 	static function createFromCloneCustom($socid = 0, $object,$frequency=0)
 	{
-		global $user, $hookmanager;
+		global $user, $hookmanager,$conf;
 
 		$error = 0;
 
@@ -348,6 +348,13 @@ class multiclone extends SeedObject
 		// Create clone
 		$result = $object->create($user);
 		$object->add_object_linked($object->element, $objFrom->id);
+		
+		if($object->element == 'facture' && $conf->global->MULTICLONE_VALIDATE_OBJECTS){
+			$object->validate($user);
+		} else if($conf->global->MULTICLONE_VALIDATE_OBJECTS){
+			$object->valid($user);	
+		}
+		
 		if ($result < 0)
 			$error++;
 

@@ -44,3 +44,6 @@ Delete=Supprimer
 
 CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clone
+
+#SETUP PAGE
+ValidateObjectsOnClone = Passer au status "validé" les documents lors du clone

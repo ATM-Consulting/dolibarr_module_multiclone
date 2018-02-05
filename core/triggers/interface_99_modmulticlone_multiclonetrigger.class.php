@@ -123,7 +123,7 @@ class Interfacemulticlonetrigger
 		// Users
 		if ($action == 'ORDER_CLONE' || $action == 'PROPAL_CLONE'||($action == 'BILL_CLONE') )
 		{
-			global $user,$db;
+			global $user,$db, $conf;
 			
 			dol_include_once('/multiclone/class/multiclone.class.php');
 			
@@ -131,14 +131,24 @@ class Interfacemulticlonetrigger
 			$frequency = GETPOST('frequency');
 			$socid = GETPOST('socid');
 
-			if(!empty($object->date_livraison))$object->set_date_livraison($user, strtotime("+$frequency month", $object->date_livraison));
-			if($object->element == 'facture' ){
+			if (!empty($object->date_livraison))
+				$object->set_date_livraison($user, strtotime("+$frequency month", $object->date_livraison));
+			if ($object->element == 'facture')
+			{
 				$id_source = GETPOST('id');
 				$objFrom = new Facture($db);
 				$objFrom->fetch($id_source);
-				multiclone::setFactureDate($objFrom,$object,$frequency);
+				multiclone::setFactureDate($objFrom, $object, $frequency);
+				if ($conf->global->MULTICLONE_VALIDATE_OBJECTS)
+				{
+					$object->validate($user);
+				}
 			}
-			
+			else if ($conf->global->MULTICLONE_VALIDATE_OBJECTS && $object->element != 'facture')
+			{
+				$object->valid($user);
+			}
+
 			if (($qty > 1))
 			{
 				for ($i = 1; $i < $qty; $i++)
