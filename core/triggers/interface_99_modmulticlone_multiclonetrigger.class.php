@@ -139,15 +139,9 @@ class Interfacemulticlonetrigger
 				$objFrom = new Facture($db);
 				$objFrom->fetch($id_source);
 				multiclone::setFactureDate($objFrom, $object, $frequency);
-				if ($conf->global->MULTICLONE_VALIDATE_OBJECTS)
-				{
-					$object->validate($user);
-				}
+				if ($conf->global->MULTICLONE_VALIDATE_INVOICE) $object->validate($user);
 			}
-			else if ($conf->global->MULTICLONE_VALIDATE_OBJECTS && $object->element != 'facture')
-			{
-				$object->valid($user);
-			}
+			else if (($conf->global->MULTICLONE_VALIDATE_PROPAL && $object->element == 'propal') || ($conf->global->MULTICLONE_VALIDATE_ORDER && $object->element == 'commande')) $object->valid($user);
 
 			if (($qty > 1))
 			{

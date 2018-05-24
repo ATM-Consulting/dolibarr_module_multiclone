@@ -46,4 +46,6 @@ CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clone
 
 #SETUP PAGE
-ValidateObjectsOnClone = Passer au status "validé" les documents lors du clone
+ValidatePropalOnClone = Passer au status "validé" les propositions lors du clonage
+ValidateOrderOnClone = Passer au status "validé" les commandes lors du clonage
+ValidateInvoiceOnClone = Passer au status "validé" les factures lors du clonage
