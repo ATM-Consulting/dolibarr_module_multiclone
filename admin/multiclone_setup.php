@@ -105,13 +105,37 @@ print '</tr>';
 
 $var=!$var;
 print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ValidateObjectsOnClone").'</td>';
+print '<td>'.$langs->trans("ValidatePropalOnClone").'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
 print '<td align="center" width="300">';
 print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_OBJECTS">';
-print ajax_constantonoff('MULTICLONE_VALIDATE_OBJECTS');
+print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_PROPAL">';
+print ajax_constantonoff('MULTICLONE_VALIDATE_PROPAL');
+print '</form>';
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ValidateOrderOnClone").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_ORDER">';
+print ajax_constantonoff('MULTICLONE_VALIDATE_ORDER');
+print '</form>';
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("ValidateInvoiceOnClone").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="center" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_INVOICE">';
+print ajax_constantonoff('MULTICLONE_VALIDATE_INVOICE');
 print '</form>';
 print '</td></tr>';
 

@@ -277,7 +277,7 @@ class multiclone extends SeedObject
 				// 1),
 				array('type' => 'text', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => 1),
 				array('type' => 'text', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => 0),
-				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company(GETPOST('socid', 'int'), 'socid', '(s.client=1 OR s.client=3)', '', 0, 0, array(), 0, 'minwidth300')));
+				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client=1 OR s.client=3)', '', 0, 0, array(), 0, 'minwidth300')));
 			// Paiement incomplet. On demande si motif = escompte ou autre
 //		}
 		/*else
@@ -348,12 +348,9 @@ class multiclone extends SeedObject
 		// Create clone
 		$result = $object->create($user);
 		$object->add_object_linked($object->element, $objFrom->id);
-		
-		if($object->element == 'facture' && $conf->global->MULTICLONE_VALIDATE_OBJECTS){
-			$object->validate($user);
-		} else if($conf->global->MULTICLONE_VALIDATE_OBJECTS){
-			$object->valid($user);	
-		}
+
+		if($object->element == 'facture' && $conf->global->MULTICLONE_VALIDATE_INVOICE) $object->validate($user);
+		else if(($object->element == 'propal' && $conf->global->MULTICLONE_VALIDATE_PROPAL) || ($object->element == 'commande' && $conf->global->MULTICLONE_VALIDATE_ORDER)) $object->valid($user);
 		
 		if ($result < 0)
 			$error++;
