@@ -304,6 +304,7 @@ class multiclone extends SeedObject
 		$error = 0;
 
 		$object->context['createfromclone'] = 'createfromclone';
+        $object->context['createfromclonecustom'] = 'createfromclone';
 
 		$object->db->begin();
 
