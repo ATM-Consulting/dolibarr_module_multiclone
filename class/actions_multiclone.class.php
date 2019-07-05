@@ -80,11 +80,16 @@ class Actionsmulticlone
 		dol_include_once('multiclone/class/multiclone.class.php');
 		if (in_array('ordercard', explode(':', $parameters['context']))|| in_array('invoicecard', explode(':', $parameters['context']))|| in_array('propalcard', explode(':', $parameters['context'])))
 		{
-			
-			if($action == 'multiclone'){
-					print multiclone::getFormConfirmClone($object);
-			}
-			
+            if($action == 'multiclone'){
+                if (($object->element != 'facture' && !empty($object->date_livraison)) || !empty($object->date_lim_reglement)) {
+                    print multiclone::getFormConfirmClone($object);
+                } else {
+                    global $langs;
+                    $messageKey = ($object->element == 'facture') ? 'PleaseFillInPaymentDeadlineDate' : 'PleaseFillInDeliveryDate';
+                    $langs->load('multiclone@multiclone');
+                    setEventMessage($langs->trans($messageKey), 'errors');
+                }
+            }
 		}
 	}
 
