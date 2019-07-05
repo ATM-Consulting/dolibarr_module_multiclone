@@ -106,16 +106,16 @@ class Interfacemulticlonetrigger
 
 	/**
 	 * Function called when a Dolibarrr business event is done.
-	 * All functions "run_trigger" are triggered if file
-	 * is inside directory core/triggers
-	 *
-	 * 	@param		string		$action		Event action code
-	 * 	@param		Object		$object		Object
-	 * 	@param		User		$user		Object user
-	 * 	@param		Translate	$langs		Object langs
-	 * 	@param		conf		$conf		Object conf
-	 * 	@return		int						<0 if KO, 0 if no triggered ran, >0 if OK
-	 */
+     * All functions "run_trigger" are triggered if file
+     * is inside directory core/triggers
+     *
+     *     @param        string                     $action     Event action code
+     *     @param        Commande|Facture|Propal    $object     Object
+     *     @param        User                       $user       Object user
+     *     @param        Translate                  $langs      Object langs
+     *     @param        conf                       $conf       Object conf
+     *     @return       int                        <0 if KO, 0 if no triggered ran, >0 if OK
+     */
 	public function run_trigger($action, $object, $user, $langs, $conf)
 	{
 		// Put here code you want to execute when a Dolibarr business events occurs.
@@ -201,6 +201,7 @@ class Interfacemulticlonetrigger
             Header('Location: '.$redirect);
             exit;
         }
+
 
 		return 0;
 	}
