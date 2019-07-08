@@ -46,8 +46,8 @@ CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clones
 
 # Warning no date (before formconfirm)
-PleaseFillInDeliveryDate=Veuillez renseigner la date de livraison.
-PleaseFillInPaymentDeadlineDate=Veuillez renseigner la date limite de règlement de la facture.
+WarningNoDeliveryDateSet=Attention : la date de livraison n’est pas renseignée. La fréquence du clone sera ignorée.
+WarningNoPaymentDeadlineSet=Attention : la date limite de règlement de la facture n’est pas renseignée. La fréquence du clone sera ignorée.
 
 #SETUP PAGE
 ValidatePropalOnClone = Passer au statut "validé" les propositions lors du clonage

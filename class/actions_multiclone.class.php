@@ -81,14 +81,13 @@ class Actionsmulticlone
 		if (in_array('ordercard', explode(':', $parameters['context']))|| in_array('invoicecard', explode(':', $parameters['context']))|| in_array('propalcard', explode(':', $parameters['context'])))
 		{
             if($action == 'multiclone'){
-                if (($object->element != 'facture' && !empty($object->date_livraison)) || !empty($object->date_lim_reglement)) {
-                    print multiclone::getFormConfirmClone($object);
-                } else {
+                if (($object->element != 'facture' && empty($object->date_livraison)) || empty($object->date_lim_reglement)) {
                     global $langs;
-                    $messageKey = ($object->element == 'facture') ? 'PleaseFillInPaymentDeadlineDate' : 'PleaseFillInDeliveryDate';
                     $langs->load('multiclone@multiclone');
-                    setEventMessage($langs->trans($messageKey), 'errors');
+                    $messageKey = ($object->element == 'facture') ? 'WarningNoPaymentDeadlineSet' : 'WarningNoDeliveryDateSet';
+                    setEventMessage($langs->trans($messageKey), 'warnings');
                 }
+                print multiclone::getFormConfirmClone($object);
             }
 		}
 	}
