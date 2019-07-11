@@ -1,10 +1,10 @@
 Module104968Name = Multiclone
-Module104968Desc = Permettre de cloner en spécifiant le nombre de clone et la fréquence en mois
+Module104968Desc = Permettre de cloner en spécifiant le nombre de clones et la fréquence en mois
 
 ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 
 multicloneSetup = Configuration du module multiclone
-multicloneAbout = A propos du module multiclone
+multicloneAbout = À propos du module multiclone
 
 multiclone=multiclone
 
@@ -43,9 +43,13 @@ Delete=Supprimer
 #Formconfirm
 
 CloneFrequency=Fréquence du clone (en mois)
-CloneQty=Nombre de clone
+CloneQty=Nombre de clones
+
+# Warning no date (before formconfirm)
+WarningNoDeliveryDateSet=Attention : la date de livraison n’est pas renseignée. La fréquence du clone sera ignorée.
+WarningNoPaymentDeadlineSet=Attention : la date limite de règlement de la facture n’est pas renseignée. La fréquence du clone sera ignorée.
 
 #SETUP PAGE
-ValidatePropalOnClone = Passer au status "validé" les propositions lors du clonage
-ValidateOrderOnClone = Passer au status "validé" les commandes lors du clonage
-ValidateInvoiceOnClone = Passer au status "validé" les factures lors du clonage
+ValidatePropalOnClone = Passer au statut "validé" les propositions lors du clonage
+ValidateOrderOnClone = Passer au statut "validé" les commandes lors du clonage
+ValidateInvoiceOnClone = Passer au statut "validé" les factures lors du clonage
