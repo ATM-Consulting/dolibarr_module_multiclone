@@ -277,7 +277,7 @@ class multiclone extends SeedObject
 				// 1),
 				array('type' => 'text', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => 1),
 				array('type' => 'text', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => 0),
-				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client=1 OR s.client=3)', '', 0, 0, array(), 0, 'minwidth300')));
+				array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3))', '', 0, 0, array(), 0, 'minwidth300')));
 			// Paiement incomplet. On demande si motif = escompte ou autre
 //		}
 		/*else
