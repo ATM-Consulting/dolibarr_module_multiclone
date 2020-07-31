@@ -74,7 +74,7 @@ class multiclone
 
 		$object->id = 0;
 		$object->ref = '';
-		$object->statut = (get_class($object))::STATUS_DRAFT;
+		$object->statut = 0;
 
 		// Clear fields
 		$object->user_author_id = $user->id;
