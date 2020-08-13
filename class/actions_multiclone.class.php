@@ -64,8 +64,6 @@ class Actionsmulticlone
 	 */
 	function doActions($parameters, &$object, &$action, $hookmanager)
 	{
-
-
 		if (in_array('ordercard', explode(':', $parameters['context'])) || in_array('invoicecard', explode(':', $parameters['context'])) || in_array('propalcard', explode(':', $parameters['context'])))
 		{
 			//var_dump($action);exit;
@@ -80,16 +78,17 @@ class Actionsmulticlone
 		dol_include_once('multiclone/class/multiclone.class.php');
 		if (in_array('ordercard', explode(':', $parameters['context']))|| in_array('invoicecard', explode(':', $parameters['context']))|| in_array('propalcard', explode(':', $parameters['context'])))
 		{
-            if($action == 'multiclone'){
-                if (($object->element != 'facture' && empty($object->date_livraison)) || empty($object->date_lim_reglement)) {
-                    global $langs;
-                    $langs->load('multiclone@multiclone');
-                    $messageKey = ($object->element == 'facture') ? 'WarningNoPaymentDeadlineSet' : 'WarningNoDeliveryDateSet';
-                    setEventMessage($langs->trans($messageKey), 'warnings');
-                }
-                print multiclone::getFormConfirmClone($object);
-            }
+			if($action == 'multiclone') {
+				if (($object->element != 'facture' && empty($object->date_livraison))
+				    || ($object->element == 'facture' && empty($object->date_lim_reglement))) {
+					global $langs;
+					$langs->load('multiclone@multiclone');
+					$messageKey = ($object->element == 'facture') ? 'WarningNoPaymentDeadlineSet' : 'WarningNoDeliveryDateSet';
+					setEventMessage($langs->trans($messageKey), 'warnings');
+				}
+				
+                		print multiclone::getFormConfirmClone($object);
+            		}
 		}
 	}
-
 }
