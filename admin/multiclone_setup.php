@@ -115,7 +115,7 @@ if ($conf->fournisseur->enabled) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if ($conf->tax->enabled) {
+if (floatval(DOL_VERSION) >= 14.0 && $conf->tax->enabled) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
 
