@@ -1,6 +1,6 @@
 <?php
-/* <one line to give the program's name and a brief idea of what it does.>
- * Copyright (C) 2015 ATM Consulting <support@atm-consulting.fr>
+/* Copyright (C) 2004-2017 Laurent Destailleur  <eldy@users.sourceforge.net>
+ * Copyright (C) 2021 SuperAdmin <support@atm-consulting.fr>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,65 +13,59 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
- * 	\file		admin/multiclone.php
- * 	\ingroup	multiclone
- * 	\brief		This file is an example module setup page
- * 				Put some comments here
+ * \file    multiclone/admin/setup.php
+ * \ingroup multiclone
+ * \brief   Multiclone setup page.
  */
-// Dolibarr environment
-$res = @include("../../main.inc.php"); // From htdocs directory
-if (! $res) {
-    $res = @include("../../../main.inc.php"); // From "custom" directory
+
+// Load Dolibarr environment
+$res = 0;
+// Try main.inc.php into web root known defined into CONTEXT_DOCUMENT_ROOT (not always defined)
+if(! $res && ! empty($_SERVER["CONTEXT_DOCUMENT_ROOT"])) $res = @include $_SERVER["CONTEXT_DOCUMENT_ROOT"]."/main.inc.php";
+// Try main.inc.php into web root detected using web root calculated from SCRIPT_FILENAME
+$tmp = empty($_SERVER['SCRIPT_FILENAME']) ? '' : $_SERVER['SCRIPT_FILENAME'];
+$tmp2 = realpath(__FILE__);
+$i = strlen($tmp) - 1;
+$j = strlen($tmp2) - 1;
+while($i > 0 && $j > 0 && isset($tmp[$i]) && isset($tmp2[$j]) && $tmp[$i] == $tmp2[$j]) {
+    $i--;
+    $j--;
 }
+if(! $res && $i > 0 && file_exists(substr($tmp, 0, ($i + 1))."/main.inc.php")) $res = @include substr($tmp, 0, ($i + 1))."/main.inc.php";
+if(! $res && $i > 0 && file_exists(dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php")) $res = @include dirname(substr($tmp, 0, ($i + 1)))."/main.inc.php";
+// Try main.inc.php using relative path
+if(! $res && file_exists("../../main.inc.php")) $res = @include "../../main.inc.php";
+if(! $res && file_exists("../../../main.inc.php")) $res = @include "../../../main.inc.php";
+if(! $res) die("Include of main fails");
+
+global $langs, $user, $conf;
+$inputCount = 1;
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
 require_once '../lib/multiclone.lib.php';
 
 // Translations
-$langs->load("multiclone@multiclone");
+$langs->loadLangs(array("multiclone@multiclone", "bills", "propal", "orders", "salaries", "compta"));
 
 // Access control
-if (! $user->admin) {
-    accessforbidden();
-}
+if(! $user->admin) accessforbidden();
 
 // Parameters
 $action = GETPOST('action', 'alpha');
+$backtopage = GETPOST('backtopage', 'alpha');
+$value = GETPOST('value', 'alpha');
 
 /*
  * Actions
  */
-if (preg_match('/set_(.*)/',$action,$reg))
-{
-	$code=$reg[1];
-	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
-	{
-		header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
-	}
-	else
-	{
-		dol_print_error($db);
-	}
-}
-	
-if (preg_match('/del_(.*)/',$action,$reg))
-{
-	$code=$reg[1];
-	if (dolibarr_del_const($db, $code, 0) > 0)
-	{
-		Header("Location: ".$_SERVER["PHP_SELF"]);
-		exit;
-	}
-	else
-	{
-		dol_print_error($db);
-	}
+
+if((float) DOL_VERSION >= 6) {
+    include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 }
 
 /*
@@ -81,66 +75,208 @@ $page_name = "multicloneSetup";
 llxHeader('', $langs->trans($page_name));
 
 // Subheader
-$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'
-    . $langs->trans("BackToModuleList") . '</a>';
-print_fiche_titre($langs->trans($page_name), $linkback);
+$linkback = '<a href="' . DOL_URL_ROOT . '/admin/modules.php">'. $langs->trans("BackToModuleList") . '</a>';
+
+print load_fiche_titre($langs->trans($page_name), $linkback, 'title_setup');
 
 // Configuration header
 $head = multicloneAdminPrepareHead();
-dol_fiche_head(
-    $head,
-    'settings',
-    $langs->trans("Module104968Name"),
-    0,
-    "multiclone@multiclone"
-);
+print dol_get_fiche_head($head,'settings', $langs->trans("ModulemulticloneName"), -1,"multiclone@multiclone");
 
-$var=false;
+// Setup page goes here
+$var = 0;
+
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+
 print '<table class="noborder" width="100%">';
-print '<tr class="liste_titre">';
-print '<td>'.$langs->trans("Parameters").'</td>'."\n";
-print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="100">'.$langs->trans("Value").'</td>'."\n";
-print '</tr>';
 
-$var=!$var;
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ValidatePropalOnClone").'</td>';
-print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="300">';
-print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_PROPAL">';
-print ajax_constantonoff('MULTICLONE_VALIDATE_PROPAL');
-print '</form>';
-print '</td></tr>';
+_setupPrintTitle($langs->trans("Parameters"));
 
-$var=!$var;
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ValidateOrderOnClone").'</td>';
-print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="300">';
-print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_ORDER">';
-print ajax_constantonoff('MULTICLONE_VALIDATE_ORDER');
-print '</form>';
-print '</td></tr>';
+_printOnOff('MULTICLONE_VALIDATE_PROPAL', $langs->trans("ValidatePropalOnClone"));
+_printOnOff('MULTICLONE_VALIDATE_ORDER', $langs->trans("ValidateOrderOnClone"));
+_printOnOff('MULTICLONE_VALIDATE_INVOICE', $langs->trans("ValidateInvoiceOnClone"));
 
-$var=!$var;
-print '<tr '.$bc[$var].'>';
-print '<td>'.$langs->trans("ValidateInvoiceOnClone").'</td>';
-print '<td align="center" width="20">&nbsp;</td>';
-print '<td align="center" width="300">';
-print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">'; // Keep form because ajax_constantonoff return single link with <a> if the js is disabled
-print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
-print '<input type="hidden" name="action" value="set_MULTICLONE_VALIDATE_INVOICE">';
-print ajax_constantonoff('MULTICLONE_VALIDATE_INVOICE');
-print '</form>';
-print '</td></tr>';
+_setupPrintTitle($langs->trans("AdvancedParameters"));
+
+if ($conf->propal->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_PROPAL', $langs->trans("ActivateForObject", $langs->trans('Proposals')));
+}
+
+if ($conf->commande->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_ORDER', $langs->trans("ActivateForObject", $langs->trans('Orders')));
+}
+
+if ($conf->facture->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_INVOICE', $langs->trans("ActivateForObject", $langs->trans('Invoices')));
+}
+
+if ($conf->fournisseur->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
+}
+
+if (floatval(DOL_VERSION) >= 14.0 && $conf->tax->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
+}
+
+if (floatval(DOL_VERSION) >= 14.0 && $conf->salaries->enabled) {
+    _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
+}
+
+if (empty ($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE)) {
+    dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);
+}
+
+$metas = array('type' => 'number', 'min' => 0, 'placeholder' => 100);
+_printInputFormPart('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', $langs->trans("MaxAuthorizedCloneValue"), '', $metas);
+
 
 print '</table>';
+
+_updateBtn();
+
+print '</form>';
 
 llxFooter();
 
 $db->close();
+
+/**
+ * Display title
+ *
+ * @param string $title
+ */
+function _setupPrintTitle($title = "", $width = 300) {
+    global $langs;
+    print '<tr class="liste_titre">';
+    print '<th colspan="3">'.$langs->trans($title).'</th>'."\n";
+    print '</tr>';
+}
+
+/**
+ * Print an update button
+ *
+ * @return void
+ */
+function _updateBtn() {
+    global $langs;
+    print '<div style="text-align: right;margin-right: 15px" >';
+    print '<input type="submit" class="butAction" value="'.$langs->trans("Save").'">';
+    print '</div>';
+}
+
+/**
+ * Print a On/Off button
+ *
+ * @param string $confkey the conf key
+ * @param bool   $title   Title of conf
+ * @param string $desc    Description
+ *
+ * @return void
+ */
+function _printOnOff($confkey, $title = false, $desc = '') {
+    global $var, $bc, $langs;
+    print '<tr class="oddeven">';
+    print '<td>'.($title ? $title : $langs->trans($confkey));
+    if(! empty($desc)) {
+        print '<br><small>'.$langs->trans($desc).'</small>';
+    }
+    print '</td>';
+    print '<td class="center" width="20">&nbsp;</td>';
+    print '<td class="right">';
+    print ajax_constantonoff($confkey);
+    print '</td></tr>';
+}
+
+/**
+ * Print a form part
+ *
+ * @param string $confkey the conf key
+ * @param bool   $title   Title of conf
+ * @param string $desc    Description of
+ * @param array  $metas   html meta
+ * @param string $type    type of input textarea or input
+ * @param bool   $help    help description
+ *
+ * @return void
+ */
+function _printInputFormPart($confkey, $title = false, $desc = '', $metas = [], $type = 'input', $help = false, $moreHtmlBefore = '', $moreHtmlAfter = '') {
+    global $var, $bc, $langs, $conf, $db, $inputCount;
+    $var = ! $var;
+    _curentInputIndex(true);
+    $form = new Form($db);
+
+    $defaultMetas = [
+        'name' => _curentInputValue()
+    ];
+
+    if($type != 'textarea') {
+        $defaultMetas['type'] = 'text';
+        $defaultMetas['value'] = $conf->global->{$confkey};
+    }
+
+    $metas = array_merge($defaultMetas, $metas);
+    $metascompil = '';
+    foreach($metas as $key => $values) {
+        $metascompil .= ' '.$key.'="'.$values.'" ';
+    }
+
+    print '<tr '.$bc[$var].'>';
+    print '<td>';
+
+    if(! empty($help)) {
+        print $form->textwithtooltip(($title ? $title : $langs->trans($confkey)), $langs->trans($help), 2, 1, img_help(1, ''));
+    }
+    else {
+        print $title ? $title : $langs->trans($confkey);
+    }
+
+    if(! empty($desc)) {
+        print '<br><small>'.$langs->trans($desc).'</small>';
+    }
+
+    print '</td>';
+    print '<td class="center" width="20">&nbsp;</td>';
+    print '<td class="right">';
+
+    print $moreHtmlBefore;
+
+    print _curentParam($confkey);
+
+    print '<input type="hidden" name="action" value="setModuleOptions">';
+    if($type == 'textarea') {
+        print '<textarea '.$metascompil.'  >'.dol_htmlentities($conf->global->{$confkey}).'</textarea>';
+    }
+    else if($type == 'input') {
+        print '<input '.$metascompil.'  />';
+    }
+    else {
+        print $type;
+    }
+
+    print $moreHtmlAfter;
+
+    print '</td></tr>';
+}
+
+function _curentInputIndex($next = false) {
+    global $inputCount;
+
+    if(empty($inputCount)) {
+        $inputCount = 1;
+    }
+
+    if($next) {
+        $inputCount++;
+    }
+
+    return $inputCount;
+}
+
+function _curentParam($confkey) {
+    return '<input type="hidden" name="param'._curentInputIndex().'" value="'.$confkey.'">';
+}
+
+function _curentInputValue($offset = 0) {
+    return 'value'.(_curentInputIndex() + $offset);
+}
