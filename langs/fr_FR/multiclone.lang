@@ -50,6 +50,10 @@ WarningNoDeliveryDateSet=Attention : la date de livraison n’est pas renseign�
 WarningNoPaymentDeadlineSet=Attention : la date limite de règlement de la facture n’est pas renseignée. La fréquence du clone sera ignorée.
 
 #SETUP PAGE
+BackToModuleList = Retour à la liste des modules
+AdvancedParameters = Paramètres avancés
 ValidatePropalOnClone = Passer au statut "validé" les propositions lors du clonage
 ValidateOrderOnClone = Passer au statut "validé" les commandes lors du clonage
 ValidateInvoiceOnClone = Passer au statut "validé" les factures lors du clonage
+ActivateForObject = Activer Multiclone sur les %s
+MaxAuthorizedCloneValue = Valeur max de clones autorisée (100 par défaut)
