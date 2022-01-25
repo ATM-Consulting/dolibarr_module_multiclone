@@ -117,7 +117,10 @@ class multiclone
         }
 
         // Le CreateFromClone de commande modifie systématiquement cette date, ce qui empêche de saisir les nouvelles dates correctement
-        if ($object->element == 'commande') $order_origin_date = $object->date;
+        if ($object->element == 'commande') {
+            $order_origin_date = $object->date;
+            $order_origin_delivery_date = $object->delivery_date;
+        }
 
         // Contrainte d'unicité sur la référence fournisseur (la référence fournisseur doit être unique si même tiers et même entité)
         if ($object->element == 'invoice_supplier') $ref_supplier = $object->ref_supplier;
@@ -212,8 +215,10 @@ class multiclone
                         //On calcule et enregistre les nouvelles dates
                         $newdate_date = strtotime(date('Y-m-d', $order_origin_date) . ' +' . $frequency * $compteur . ' month');
                         $order_clone->date_commande = $newdate_date;
-                        //Unset de la date de livraison car elle deviendrait incohérente en fonction de la fréquence et de la quantité de clones
-                        $order_clone->delivery_date = null;
+
+                        $newdate_delivery_date = strtotime(date('Y-m-d', $order_origin_delivery_date) . ' +' . $frequency * $compteur . ' month');
+                        $order_clone->delivery_date = $newdate_delivery_date;
+
                         //On définit le tiers concerné par le/les clones
                         $order_clone->socid = $socid;
 
