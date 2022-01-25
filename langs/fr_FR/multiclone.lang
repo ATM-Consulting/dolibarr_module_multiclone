@@ -42,8 +42,19 @@ Delete=Supprimer
 
 #Formconfirm
 
+Clone=Cloner
 CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clones
+MulticloneMaxAuthorizedValueReached=Le nombre de clones saisi (<b>%s</b>) est supérieur au maximum de clones autorisés dans la configuration (<b>%s</b>)
+ErrorMulticlone = Une erreur est survenue durant le clone : %s
+
+ConfirmClonepropal=Êtes-vous sûr(e) de vouloir cloner la proposition commerciale <b>%s</b> ?
+ConfirmClonecommande=Êtes-vous sûr(e) de vouloir cloner la commande <b>%s</b> ?
+ConfirmClonefacture=Êtes-vous sûr(e) de vouloir cloner la facture <b>%s</b> ?
+ConfirmCloneinvoice_supplier=Êtes-vous sûr(e) de vouloir cloner la facture fournisseur <b>%s</b> ?
+ConfirmClonechargesociales=Êtes-vous sûr(e) de vouloir cloner la charge sociale <b>%s</b> ?
+
+SelectUser=Sélectionner un utilisateur
 
 # Warning no date (before formconfirm)
 WarningNoDeliveryDateSet=Attention : la date de livraison n’est pas renseignée. La fréquence du clone sera ignorée.

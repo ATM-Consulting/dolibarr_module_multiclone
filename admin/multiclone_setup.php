@@ -50,7 +50,7 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
 require_once '../lib/multiclone.lib.php';
 
 // Translations
-$langs->loadLangs(array("multiclone@multiclone", "bills", "propal", "orders", "salaries", "compta"));
+$langs->loadLangs(array("multiclone@multiclone", "bills", "propal", "orders", "salaries", "compta", "admin"));
 
 // Access control
 if(! $user->admin) accessforbidden();

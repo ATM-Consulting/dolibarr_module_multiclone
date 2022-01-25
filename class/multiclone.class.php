@@ -6,7 +6,7 @@ class multiclone
 	{
 		dol_include_once('/core/class/html.form.class.php');
 		global $langs, $db;
-		$langs->load('multiclone@multiclone');
+		$langs->loadLangs(array('multiclone@multiclone', 'salaries'));
 		$form = new Form($db);
 
 			$elem = $object->element;
@@ -20,7 +20,7 @@ class multiclone
                 $other_question
             );
 
-		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans("Clone$elem"), $langs->trans("ConfirmClone$elem", $object->ref), 'confirm_multiclone', $formquestion, 'yes', 1);
+        $formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans("Clone"), $langs->trans("ConfirmClone$elem", $object->ref), 'confirm_multiclone', $formquestion, 'yes', 1);
 
 		return $formconfirm;
 	}
@@ -101,31 +101,44 @@ class multiclone
 		}
 	}
 
-    static function multiCreateFromClone($object,$qty,$frequency,$socid)
+    static function multiCreateFromClone($object, $qty, $frequency, $socid)
 	{
-        global $db, $langs, $user;
+        global $db, $langs, $user, $conf;
 
         $db->begin();
         $compteur = 0;
         $error = 0;
-        $objFrom = clone $object;
+        $langs->load('multiclone@multiclone');
+
+        if (! empty($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE) && $qty > $conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE) {
+            setEventMessage($langs->trans('MulticloneMaxAuthorizedValueReached', $qty, $conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE), 'errors');
+            header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id);
+            exit;
+        }
+
+        // Le CreateFromClone de commande modifie systématiquement cette date, ce qui empêche de saisir les nouvelles dates correctement
+        if ($object->element == 'commande') $order_origin_date = $object->date;
+
+        // Contrainte d'unicité sur la référence fournisseur (la référence fournisseur doit être unique si même tiers et même entité)
+        if ($object->element == 'invoice_supplier') $ref_supplier = $object->ref_supplier;
+
         while ($compteur<$qty){
             $compteur++;
             switch ($object->element) {
                 case 'salary':
                     $salary = new Salary($db);
                     $salary->fetch($object->id);
-                    //On vide l'id et la ref (comme le fais l'action confirm_clone du module salary)
-                    //Ces champs seront rempli grace à la fonction create
+                    //On vide l'id et la ref (comme le fait l'action confirm_clone du module salary)
+                    //Ces champs seront remplis grâce à la fonction create
                     $salary->id = $salary->ref = null;
-                    //Nommage des nouveau Salaire en fonction de la quantité demandée
+                    //Nommage des nouveaux salaires en fonction de la quantité demandée
                     $salary->label = $langs->trans("CopyOf") . ' ' . $object->label . ' (' . $compteur . ')';
                     //On calcule et enregistre les nouvelles dates
                     $newdatestart = strtotime(date('Y-m-d', $salary->datesp) . ' +' . $frequency * $compteur. ' month');
                     $newdateend = strtotime(date('Y-m-d', $salary->dateep) . ' +' . $frequency * $compteur. ' month');
                     $salary->datesp = $newdatestart;
                     $salary->dateep = $newdateend;
-                    //On défini le salarié concerné par le/les clones
+                    //On définit le salarié concerné par le/les clones
                     $salary->fk_user = $socid;
 
                     //On crée le clone
@@ -139,17 +152,17 @@ class multiclone
                 case 'chargesociales':
                     $charges = new ChargeSociales($db);
                     $charges->fetch($object->id);
-                    //On vide l'id et la ref (comme le fais l'action confirm_clone du module salary)
-                    //Ces champs seront rempli grace à la fonction create
+                    //On vide l'id et la ref (comme le fait l'action confirm_clone du module chargesociales)
+                    //Ces champs seront remplis grâce à la fonction create
                     $charges->id = $charges->ref = null;
-                    //Nommage des nouveau Salaire en fonction de la quantité demandée
+                    //Nommage des nouvelles charges sociales en fonction de la quantité demandée
                     $charges->label = $langs->trans("CopyOf") . ' ' . $object->label . ' (' . $compteur . ')';
                     //On calcule et enregistre les nouvelles dates
                     $newdate_ech = strtotime(date('Y-m-d', $charges->date_ech) . ' +' . $frequency * $compteur . ' month');
                     $newdate_periode = strtotime(date('Y-m-d', $charges->periode) . ' +' . $frequency * $compteur . ' month');
                     $charges->date_ech = $newdate_ech;
                     $charges->periode = $newdate_periode;
-                    //On défini le salarié concerné par le/les clones
+                    //On définit le salarié concerné par le/les clones
                     $charges->fk_user = $socid;
 
                     //On crée le clone
@@ -169,13 +182,15 @@ class multiclone
                         //On calcule et enregistre les nouvelles dates
                         $newdate_date = strtotime(date('Y-m-d', $propal->date) . ' +' . $frequency * $compteur . ' month');
                         //Modification de la date de fin de validité (semble logique de l'accorder avec la date propale)
-                        $newdate_fin = strtotime(date('Y-m-d', $propal->fin_validite) . ' +' . $frequency * $compteur . ' month');
+                        $newdate_end = strtotime(date('Y-m-d', $propal->fin_validite) . ' +' . $frequency * $compteur . ' month');
                         $propal_clone->date = $newdate_date;
-                        $propal_clone->fin_validite = $newdate_fin;
-                        //Unset de la date de livraison car elle deviendrait incohérente en fonction de la fréquence et de la quantité de clone
+                        $propal_clone->fin_validite = $newdate_end;
+                        //Unset de la date de livraison car elle deviendrait incohérente en fonction de la fréquence et de la quantité de clones
                         $propal_clone->delivery_date = null;
-                        //On défini le tiers concerné par le/les clones
+                        //On définit le tiers concerné par le/les clones
                         $propal_clone->socid = $socid;
+
+                        if (! empty($conf->global->MULTICLONE_VALIDATE_PROPAL)) $propal_clone->valid($user);
 
                         $res_update = $propal_clone->update($user);
                         if ($res_update<0) {
@@ -187,22 +202,51 @@ class multiclone
                         break;
                     }
                     break;
+
+                case 'commande':
+                    $order = $object;
+                    $id_clone = $order->createFromClone($user);
+                    if ($id_clone > 0) {
+                        $order_clone = new Commande($db);
+                        $order_clone->fetch($id_clone);
+                        //On calcule et enregistre les nouvelles dates
+                        $newdate_date = strtotime(date('Y-m-d', $order_origin_date) . ' +' . $frequency * $compteur . ' month');
+                        $order_clone->date_commande = $newdate_date;
+                        //Unset de la date de livraison car elle deviendrait incohérente en fonction de la fréquence et de la quantité de clones
+                        $order_clone->delivery_date = null;
+                        //On définit le tiers concerné par le/les clones
+                        $order_clone->socid = $socid;
+
+                        if (! empty($conf->global->MULTICLONE_VALIDATE_ORDER)) $order_clone->valid($user);
+
+                        $res_update = $order_clone->update($user);
+                        if ($res_update<0) {
+                            $error++;
+                            break;
+                        }
+                    } else {
+                        $error++;
+                        break;
+                    }
+                    break;
+
                 case 'facture':
-                    //TODO Résoudre : pas de clone des lignes de facture
                     $facture = $object;
-                    $id_clone = $facture->createFromClone($user);
+                    $id_clone = $facture->createFromClone($user, $object->id);
                     if ($id_clone > 0) {
                         $facture_clone = new Facture($db);
                         $facture_clone->fetch($id_clone);
                         //On calcule et enregistre les nouvelles dates
                         $newdate_date = strtotime(date('Y-m-d', $facture->date) . ' +' . $frequency * $compteur . ' month');
                         $facture_clone->date = $newdate_date;
-                        //On défini le tiers concerné par le/les clones
+                        //On définit le tiers concerné par le/les clones
                         $facture_clone->socid = $socid;
-                        //Cond et mode réglement ne sont pas cloné par la fonction creatFromClone
+                        //Conditions et mode de règlement ne sont pas clonés par la fonction CreateFromClone
                         $facture_clone->cond_reglement_id = $facture->cond_reglement_id;
                         $facture_clone->mode_reglement_id = $facture->mode_reglement_id;
                         $facture_clone->date_lim_reglement = null;
+
+                        if(! empty($conf->global->MULTICLONE_VALIDATE_INVOICE)) $facture_clone->validate($user);
 
                         $res_update = $facture_clone->update($user);
                         if ($res_update<0) {
@@ -214,19 +258,41 @@ class multiclone
                         break;
                     }
                     break;
+
                 case 'invoice_supplier':
+                    $supplier_invoice = $object;
+                    $supplier_invoice->ref_supplier = $ref_supplier.'-'.$compteur;
+                    $id_clone = $supplier_invoice->createFromClone($user, $object->id);
+
+                    if ($id_clone > 0) {
+                        $supplier_invoice_clone = new FactureFournisseur($db);
+                        $supplier_invoice_clone->fetch($id_clone);
+                        //On calcule et enregistre les nouvelles dates
+                        $newdate_date = strtotime(date('Y-m-d', $supplier_invoice->date) . ' +' . $frequency * $compteur . ' month');
+                        $supplier_invoice_clone->date = $newdate_date;
+
+                        //On définit le tiers concerné par le/les clones
+                        $supplier_invoice_clone->socid = $socid;
+
+                        $res_update = $supplier_invoice_clone->update($user);
+                        if ($res_update<0) {
+                            $error++;
+                            break;
+                        }
+                    } else {
+                        $error++;
+                        break;
+                    }
                     break;
-                case 'commande':
-                    break;
+
                 default:
                     break;
             }
         }
 
         if ($error>0){
-
             $db->rollback();
-            setEventMessage("ErrorMulticlone", 'errors');
+            setEventMessage($langs->trans("ErrorMulticlone", $db->lasterror()), 'errors');
         } else {
             $db->commit();
             $db->close();

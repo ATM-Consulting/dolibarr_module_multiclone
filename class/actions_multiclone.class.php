@@ -65,12 +65,12 @@ class Actionsmulticlone
     function doActions($parameters, &$object, &$action, $hookmanager) {
         global $conf, $langs, $db;
 
-        if (in_array('ordercard', explode(':', $parameters['context']))
-            || in_array('invoicecard', explode(':', $parameters['context']))
-            || in_array('invoicesuppliercard', explode(':', $parameters['context']))
-            || in_array('propalcard', explode(':', $parameters['context']))
-            || in_array('salarycard', explode(':', $parameters['context']))
-            || in_array('socialecard', explode(':', $parameters['context']))) {
+        if ((in_array('ordercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_ORDER))
+            || (in_array('invoicecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_INVOICE))
+            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE))
+            || (in_array('propalcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_PROPAL))
+            || (in_array('salarycard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SALARY))
+            || (in_array('socialecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX))) {
             // Passage à l'action multiclone dès lors que l'action clone est encleché
             // Pas de traitement de l'action clone : remplacé par le traitement de l'action multiclone
             if ($action === 'clone') {
@@ -78,15 +78,14 @@ class Actionsmulticlone
             } elseif ($action === 'confirm_multiclone') {
                 dol_include_once('/multiclone/class/multiclone.class.php');
 
-                $qty = GETPOST('cloneqty');
-                $frequency = GETPOST('frequency');
-                $socid = GETPOST('socid');
+                $qty = GETPOST('cloneqty', 'int');
+                $frequency = GETPOST('frequency', 'int');
+                $socid = GETPOST('socid', 'int');
                 if (empty($socid)){
-                    $idToSend = GETPOST('userid');
+                    $idToSend = GETPOST('userid', 'int');
                 } else {
                     $idToSend = $socid;
                 }
-
 
                 multiclone::multiCreateFromClone($object, $qty, $frequency, $idToSend);
             }
@@ -126,7 +125,7 @@ class Actionsmulticlone
                             setEventMessage($langs->trans($messageKey), 'warnings');
                         }
                         break;
-                    // Pour ceux-là, les champ de date sont nécéssaires à la création, pas besoin de vérifier
+                    // Pour ceux-là, les champs de date sont nécéssaires à la création, pas besoin de vérifier
                     case 'salary':
                     case 'chargesociales':
                     default:
@@ -134,6 +133,7 @@ class Actionsmulticlone
 
                 }
                 print multiclone::getFormConfirmClone($object);
+
                 return 1;
             }
         }
