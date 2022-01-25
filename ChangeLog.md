@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+- NEW : Refonte du module & ajout du fonctionnement sur objets Salaire, Charges sociales et factures fournisseur *25/01/2022* - 1.2.0
 - NEW : Module redesign - admin setup and display *09/12/2021* - 1.1.0
 
 ## Version 1.0
