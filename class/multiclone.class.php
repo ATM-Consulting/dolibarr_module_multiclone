@@ -16,7 +16,7 @@ class multiclone
             }
 			$formquestion = array(
 				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="'.$conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE.'">'),
-				array('type' => 'other', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => '<input type="number" style="width: 100px;" id="clonefrequency" step="1" min="1">'),
+				array('type' => 'other', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => '<input type="number" style="width: 100px;" id="frequency" step="1" min="1">'),
                 $other_question
             );
 
@@ -143,10 +143,10 @@ class multiclone
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
                         $propal_clone->date = $TNewDates[0];
-                        $propal_clone->fin_validite = $TNewDates[1];
 
-                        //Unset de la date de livraison car elle deviendrait incohérente en fonction de la fréquence et de la quantité de clones
+                        //Unset de la date de livraison (la spec ne demande pas que cette date soit prise en compte dans le clone)
                         $propal_clone->delivery_date = null;
+
                         //On définit le tiers concerné par le/les clones
                         $propal_clone->socid = $socid;
 
@@ -373,7 +373,6 @@ class multiclone
         switch ($object->element) {
             case 'propal' :
                 $TDatesToClone['origin_date'] = $object->date;
-                $TDatesToClone['origin_date_fin_validite'] = $object->fin_validite;
                 break;
 
             case 'commande':
