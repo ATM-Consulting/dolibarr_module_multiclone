@@ -115,13 +115,15 @@ if ($conf->fournisseur->enabled) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) >= 14.0 && $conf->tax->enabled) {
+if (floatval(DOL_VERSION) >= 16.0 && $conf->tax->enabled) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
+else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (floatval(DOL_VERSION) >= 14.0 && $conf->salaries->enabled) {
+if (floatval(DOL_VERSION) >= 16.0 && $conf->salaries->enabled) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
 }
+else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
 if (empty ($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE)) {
     dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);

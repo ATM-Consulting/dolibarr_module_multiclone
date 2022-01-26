@@ -46,7 +46,7 @@ Clone=Cloner
 CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clones
 MulticloneMaxAuthorizedValueReached=Le nombre de clones saisi (<b>%s</b>) est supérieur au maximum de clones autorisés dans la configuration (<b>%s</b>)
-ErrorMulticlone = Une erreur est survenue durant le clone : %s
+ErrorMulticlone=Une erreur est survenue durant le clone : %s
 
 ConfirmClonepropal=Êtes-vous sûr(e) de vouloir cloner la proposition commerciale <b>%s</b> ?
 ConfirmClonecommande=Êtes-vous sûr(e) de vouloir cloner la commande <b>%s</b> ?
@@ -67,4 +67,5 @@ ValidatePropalOnClone = Passer au statut "validé" les propositions lors du clon
 ValidateOrderOnClone = Passer au statut "validé" les commandes lors du clonage
 ValidateInvoiceOnClone = Passer au statut "validé" les factures lors du clonage
 ActivateForObject = Activer Multiclone sur les %s
-MaxAuthorizedCloneValue = Valeur max de clones autorisée (100 par défaut)
+MaxAuthorizedCloneValue = Valeur maximale de clones autorisée (100 par défaut)
+FeatureNotAvailableForThisDolVersion = Fonctionnalité non disponible avec votre version actuelle de Dolibarr. </br> Nécessite la version 16.0 de Dolibarr.
