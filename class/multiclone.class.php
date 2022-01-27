@@ -138,7 +138,11 @@ class multiclone
                     $id_clone = $propal->createFromClone($user);
                     if ($id_clone > 0) {
                         $propal_clone = new Propal($db);
-                        $propal_clone->fetch($id_clone);
+                        $res = $propal_clone->fetch($id_clone);
+                        if ($res < 0 ) {
+                            $error++;
+                            break;
+                        }
 
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
@@ -168,7 +172,11 @@ class multiclone
                     $id_clone = $order->createFromClone($user);
                     if ($id_clone > 0) {
                         $order_clone = new Commande($db);
-                        $order_clone->fetch($id_clone);
+                        $res = $order_clone->fetch($id_clone);
+                        if ($res < 0 ) {
+                            $error++;
+                            break;
+                        }
 
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
@@ -196,7 +204,11 @@ class multiclone
                     $id_clone = $facture->createFromClone($user, $object->id);
                     if ($id_clone > 0) {
                         $facture_clone = new Facture($db);
-                        $facture_clone->fetch($id_clone);
+                        $res = $facture_clone->fetch($id_clone);
+                        if ($res < 0 ) {
+                            $error++;
+                            break;
+                        }
 
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
@@ -229,7 +241,11 @@ class multiclone
 
                     if ($id_clone > 0) {
                         $supplier_invoice_clone = new FactureFournisseur($db);
-                        $supplier_invoice_clone->fetch($id_clone);
+                        $res = $supplier_invoice_clone->fetch($id_clone);
+                        if ($res < 0 ) {
+                            $error++;
+                            break;
+                        }
 
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
@@ -251,7 +267,12 @@ class multiclone
 
                 case 'salary':
                     $salary = new Salary($db);
-                    $salary->fetch($object->id);
+                    $res = $salary->fetch($object->id);
+                    if ($res < 0 ) {
+                        $error++;
+                        break;
+                    }
+
                     //On vide l'id et la ref (comme le fait l'action confirm_clone du module salary)
                     //Ces champs seront remplis grâce à la fonction create
                     $salary->id = $salary->ref = null;
@@ -276,7 +297,12 @@ class multiclone
 
                 case 'chargesociales':
                     $charges = new ChargeSociales($db);
-                    $charges->fetch($object->id);
+                    $res = $charges->fetch($object->id);
+                    if ($res < 0 ) {
+                        $error++;
+                        break;
+                    }
+
                     //On vide l'id et la ref (comme le fait l'action confirm_clone du module chargesociales)
                     //Ces champs seront remplis grâce à la fonction create
                     $charges->id = $charges->ref = null;
