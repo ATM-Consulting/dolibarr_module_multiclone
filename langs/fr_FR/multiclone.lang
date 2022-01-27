@@ -1,5 +1,5 @@
 Module104968Name = Multiclone
-Module104968Desc = Permettre de cloner en spécifiant le nombre de clones et la fréquence en mois
+Module104968Desc = Permettre de cloner des documents documents en spécifiant le nombre de clones et la fréquence de clonage en mois
 
 ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 
@@ -42,14 +42,30 @@ Delete=Supprimer
 
 #Formconfirm
 
+Clone=Cloner
 CloneFrequency=Fréquence du clone (en mois)
 CloneQty=Nombre de clones
+MulticloneMaxAuthorizedValueReached=Le nombre de clones saisi (<b>%s</b>) est supérieur au maximum de clones autorisés dans la configuration (<b>%s</b>)
+ErrorMulticlone=Une erreur est survenue durant le clone : %s
+
+ConfirmClonepropal=Êtes-vous sûr(e) de vouloir cloner la proposition commerciale <b>%s</b> ?
+ConfirmClonecommande=Êtes-vous sûr(e) de vouloir cloner la commande <b>%s</b> ?
+ConfirmClonefacture=Êtes-vous sûr(e) de vouloir cloner la facture <b>%s</b> ?
+ConfirmCloneinvoice_supplier=Êtes-vous sûr(e) de vouloir cloner la facture fournisseur <b>%s</b> ?
+ConfirmClonechargesociales=Êtes-vous sûr(e) de vouloir cloner la charge sociale <b>%s</b> ?
+
+SelectUser=Sélectionner un utilisateur
 
 # Warning no date (before formconfirm)
 WarningNoDeliveryDateSet=Attention : la date de livraison n’est pas renseignée. La fréquence du clone sera ignorée.
 WarningNoPaymentDeadlineSet=Attention : la date limite de règlement de la facture n’est pas renseignée. La fréquence du clone sera ignorée.
 
 #SETUP PAGE
+BackToModuleList = Retour à la liste des modules
+AdvancedParameters = Paramètres avancés
 ValidatePropalOnClone = Passer au statut "validé" les propositions lors du clonage
 ValidateOrderOnClone = Passer au statut "validé" les commandes lors du clonage
 ValidateInvoiceOnClone = Passer au statut "validé" les factures lors du clonage
+ActivateForObject = Activer Multiclone sur les %s
+MaxAuthorizedCloneValue = Valeur maximale de clones autorisée (100 par défaut)
+FeatureNotAvailableForThisDolVersion = Fonctionnalité non disponible avec votre version actuelle de Dolibarr. </br> Nécessite la version 16.0 de Dolibarr.

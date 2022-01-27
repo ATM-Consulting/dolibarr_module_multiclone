@@ -53,42 +53,89 @@ class Actionsmulticlone
 		
 	}
 
-	/**
-	 * Overloading the doActions function : replacing the parent's function with the one below
-	 *
-	 * @param   array()         $parameters     Hook metadatas (context, etc...)
-	 * @param   CommonObject    &$object        The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
-	 * @param   string          &$action        Current action (if set). Generally create or edit or null
-	 * @param   HookManager     $hookmanager    Hook manager propagated to allow calling another hook
-	 * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
-	 */
-	function doActions($parameters, &$object, &$action, $hookmanager)
-	{
-		if (in_array('ordercard', explode(':', $parameters['context'])) || in_array('invoicecard', explode(':', $parameters['context'])) || in_array('propalcard', explode(':', $parameters['context'])))
-		{
-			//var_dump($action);exit;
-			// Pour empêcher de remplir le form confirm de manière à exécuter le notre
-			if ($action === 'clone')
-				$action = 'multiclone';
-		}
-	}
+    /**
+     * Overloading the doActions function : replacing the parent's function with the one below
+     *
+     * @param array()         $parameters     Hook metadatas (context, etc...)
+     * @param CommonObject    &$object The object to process (an invoice if you are in invoice module, a propale in propale's module, etc...)
+     * @param string          &$action Current action (if set). Generally create or edit or null
+     * @param HookManager $hookmanager Hook manager propagated to allow calling another hook
+     * @return  int                             < 0 on error, 0 on success, 1 to replace standard code
+     */
+    function doActions($parameters, &$object, &$action, $hookmanager) {
+        global $conf, $langs, $db;
 
-	function formConfirm($parameters, &$object, &$action, $hookmanager)
-	{
-		dol_include_once('multiclone/class/multiclone.class.php');
-		if (in_array('ordercard', explode(':', $parameters['context']))|| in_array('invoicecard', explode(':', $parameters['context']))|| in_array('propalcard', explode(':', $parameters['context'])))
-		{
-			if($action == 'multiclone') {
-				if (($object->element != 'facture' && empty($object->date_livraison))
-				    || ($object->element == 'facture' && empty($object->date_lim_reglement))) {
-					global $langs;
-					$langs->load('multiclone@multiclone');
-					$messageKey = ($object->element == 'facture') ? 'WarningNoPaymentDeadlineSet' : 'WarningNoDeliveryDateSet';
-					setEventMessage($langs->trans($messageKey), 'warnings');
-				}
-				
-                		print multiclone::getFormConfirmClone($object);
-            		}
-		}
-	}
+        if ((in_array('ordercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_ORDER))
+            || (in_array('invoicecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_INVOICE))
+            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE))
+            || (in_array('propalcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_PROPAL))
+            || (in_array('salarycard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SALARY) && floatval(DOL_VERSION) >= 16.0)
+            || (in_array('socialecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX) && floatval(DOL_VERSION) >= 16.0)) {
+            // Passage à l'action multiclone dès lors que l'action clone est encleché
+            // Pas de traitement de l'action clone : remplacé par le traitement de l'action multiclone
+            if ($action === 'clone') {
+                $action = 'multiclone';
+            } elseif ($action === 'confirm_multiclone') {
+                dol_include_once('/multiclone/class/multiclone.class.php');
+
+                $qty = GETPOST('cloneqty', 'int');
+                $frequency = GETPOST('frequency', 'int');
+                $socid = GETPOST('socid', 'int');
+                if (empty($socid)){
+                    $idToSend = GETPOST('userid', 'int');
+                } else {
+                    $idToSend = $socid;
+                }
+
+                multiclone::multiCreateFromClone($object, $qty, $frequency, $idToSend);
+            }
+        }
+    }
+
+    function formConfirm($parameters, &$object, &$action, $hookmanager) {
+        global $langs;
+
+        dol_include_once('multiclone/class/multiclone.class.php');
+        if (in_array('ordercard', explode(':', $parameters['context']))
+            || in_array('invoicecard', explode(':', $parameters['context']))
+            || in_array('invoicesuppliercard', explode(':', $parameters['context']))
+            || in_array('propalcard', explode(':', $parameters['context']))
+            || in_array('salarycard', explode(':', $parameters['context']))
+            || in_array('socialecard', explode(':', $parameters['context']))) {
+            if ($action == 'multiclone') {
+                $langs->load('multiclone@multiclone');
+                //On check que les date soit rempli, sinon pas de traitement de la fréquence
+                switch ($object->element) {
+                    case 'commande':
+                        if (empty($object->delivery_date)) {
+                            $messageKey = 'WarningNoDeliveryDateSet';
+                            setEventMessage($langs->trans($messageKey), 'warnings');
+                        }
+                        break;
+                    case 'facture':
+                    case 'invoice_supplier':
+                        if (empty($object->date)) {
+                            $messageKey = 'WarningNoInvoiceDateSet';
+                            setEventMessage($langs->trans($messageKey), 'warnings');
+                        }
+                        break;
+                    case 'propal':
+                        if (empty($object->date)) {
+                            $messageKey = 'WarningNoPropalDateSet';
+                            setEventMessage($langs->trans($messageKey), 'warnings');
+                        }
+                        break;
+                    // Pour ceux-là, les champs de date sont nécéssaires à la création, pas besoin de vérifier
+                    case 'salary':
+                    case 'chargesociales':
+                    default:
+                        break;
+
+                }
+                print multiclone::getFormConfirmClone($object);
+
+                return 1;
+            }
+        }
+    }
 }
