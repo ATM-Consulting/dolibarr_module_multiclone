@@ -201,13 +201,13 @@ class multiclone
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
                         $facture_clone->date = $TNewDates[0];
+                        $facture_clone->date_lim_reglement = $TNewDates[1];
 
                         //On définit le tiers concerné par le/les clones
                         $facture_clone->socid = $socid;
                         //Conditions et mode de règlement ne sont pas clonés par la fonction CreateFromClone
                         $facture_clone->cond_reglement_id = $facture->cond_reglement_id;
                         $facture_clone->mode_reglement_id = $facture->mode_reglement_id;
-                        $facture_clone->date_lim_reglement = null;
 
                         if(! empty($conf->global->MULTICLONE_VALIDATE_INVOICE)) $facture_clone->validate($user);
 
@@ -381,6 +381,10 @@ class multiclone
                 break;
 
             case 'facture' :
+                $TDatesToClone['origin_date'] = $object->date;
+                $TDatesToClone['origin_date_lim_reglement'] = $object->date_lim_reglement;
+                break;
+
             case 'invoice_supplier':
                 $TDatesToClone['origin_date'] = $object->date;
                 break;
