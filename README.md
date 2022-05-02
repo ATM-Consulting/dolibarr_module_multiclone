@@ -1,7 +1,7 @@
 # DOLIBARR MODULE MULTICLONE
 
 
-Multi-Clone is a Dolibarr module usefull to manage clone planning
+Multi-Clone is a Dolibarr module usefull to manage clone planning 
 
 ## LICENSE
 Copyright (C) 2019 ATM Consulting <contact@atm-consulting.fr>
