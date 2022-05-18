@@ -97,7 +97,7 @@ class modmulticlone extends DolibarrModules
                 'invoicecard',
                 'propalcard',
                 'salarycard',
-                'socialecard',
+                'taxcard',
                 'invoicesuppliercard'
             )
         );

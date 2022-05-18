@@ -70,7 +70,7 @@ class Actionsmulticlone
             || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE))
             || (in_array('propalcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_PROPAL))
             || (in_array('salarycard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SALARY))
-            || (in_array('socialecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX))) {
+            || (in_array('taxcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX))) {
             // Passage à l'action multiclone dès lors que l'action clone est encleché
             // Pas de traitement de l'action clone : remplacé par le traitement de l'action multiclone
             if ($action === 'clone') {
@@ -101,7 +101,7 @@ class Actionsmulticlone
             || in_array('invoicesuppliercard', explode(':', $parameters['context']))
             || in_array('propalcard', explode(':', $parameters['context']))
             || in_array('salarycard', explode(':', $parameters['context']))
-            || in_array('socialecard', explode(':', $parameters['context']))) {
+            || in_array('taxcard', explode(':', $parameters['context']))) {
             if ($action == 'multiclone') {
                 $langs->load('multiclone@multiclone');
                 //On check que les date soit rempli, sinon pas de traitement de la fréquence
