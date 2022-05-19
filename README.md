@@ -1,6 +1,5 @@
 # DOLIBARR MODULE MULTICLONE
 
- 
 Multi-Clone is a Dolibarr module usefull to manage clone planning
 
 ## LICENSE
