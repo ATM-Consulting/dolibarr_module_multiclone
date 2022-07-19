@@ -12,7 +12,7 @@ class multiclone
 			$elem = $object->element;
             $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3))', '', 0, 0, array(), 0, 'minwidth300'));
             if ($elem == 'salary' || $elem == 'chargesociales'){
-                $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user));
+                $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'fk_user', 1));
             }
 			$formquestion = array(
 				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="'.$conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE.'">'),
@@ -307,7 +307,7 @@ class multiclone
                     //Ces champs seront remplis grâce à la fonction create
                     $charges->id = $charges->ref = null;
                     //Nommage des nouvelles charges sociales en fonction de la quantité demandée
-                    $charges->label = $langs->trans("CopyOf") . ' ' . $object->label . ' (' . $compteur . ')';
+                    $charges->label = $object->label;
 
                     $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
