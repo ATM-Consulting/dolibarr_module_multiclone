@@ -12,7 +12,7 @@ class multiclone
 			$elem = $object->element;
             $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3))', '', 0, 0, array(), 0, 'minwidth300'));
             if ($elem == 'salary' || $elem == 'chargesociales'){
-                $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'fk_user', 1));
+                $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'userid', 1));
             }
 			$formquestion = array(
 				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="'.$conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE.'">'),
@@ -73,14 +73,14 @@ class multiclone
 		$object->date_creation = '';
 		$object->date_validation = '';
 		$object->ref_client = '';
-		
+
 		// Create clone
 		$result = $object->create($user);
 		$object->add_object_linked($object->element, $objFrom->id);
 
 		if($object->element == 'facture' && $conf->global->MULTICLONE_VALIDATE_INVOICE) $object->validate($user);
 		else if(($object->element == 'propal' && $conf->global->MULTICLONE_VALIDATE_PROPAL) || ($object->element == 'commande' && $conf->global->MULTICLONE_VALIDATE_ORDER)) $object->valid($user);
-		
+
 		if ($result < 0)
 			$error++;
 
@@ -346,15 +346,15 @@ class multiclone
 	{
 		global $db;
 		$old_date_lim_reglement = $objFrom->date_lim_reglement;
-		
+
 	    $object->date=strtotime("+$frequency month", $objFrom->date);
 		$new_date_lim_reglement = $object->calculate_date_lim_reglement();
 		if ($new_date_lim_reglement > $old_date_lim_reglement) $object->date_lim_reglement = $new_date_lim_reglement;
 		if ($object->date_lim_reglement < $object->date) $object->date_lim_reglement = $object->date;
-		
+
 		$sql = 'UPDATE '.MAIN_DB_PREFIX.'facture SET datef="'.$db->idate($object->date).'", date_lim_reglement="'. $db->idate($object->date_lim_reglement).'" WHERE rowid='.$object->id;
 		$resql = $db->query($sql);
-		
+
 	}
 
     /**
