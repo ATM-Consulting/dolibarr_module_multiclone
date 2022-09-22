@@ -371,17 +371,19 @@ class multiclone
 
             $TNewDates = array();
             foreach ($TDatesToClone as $i => $dateToClone) {
-                $object_date_origin[$i] = date('Y-m-d', $dateToClone);
-                $last_day_of_this_month[$i] = date("Y-m-t", $dateToClone);
+				if (!empty($dateToClone)) {
+					$object_date_origin[$i] = date('Y-m-d', intval($dateToClone));
+					$last_day_of_this_month[$i] = date("Y-m-t", intval($dateToClone));
 
-                // Utilisation de l'objet DateTime plus performant
-                $object_date_to_clone[$i] = new DateTime($object_date_origin[$i]);
-                $object_last_day_of_month[$i] = new DateTime($last_day_of_this_month[$i]);
+					// Utilisation de l'objet DateTime plus performant
+					$object_date_to_clone[$i] = new DateTime($object_date_origin[$i]);
+					$object_last_day_of_month[$i] = new DateTime($last_day_of_this_month[$i]);
 
-                if ($object_date_to_clone[$i] == $object_last_day_of_month[$i]) $object_newdate = $object_date_to_clone[$i]->modify('last day of +' . $frequency * $compteur. ' month');
-                else $object_newdate = $object_date_to_clone[$i]->modify('+' . $frequency * $compteur. ' month');
+					if ($object_date_to_clone[$i] == $object_last_day_of_month[$i]) $object_newdate = $object_date_to_clone[$i]->modify('last day of +' . $frequency * $compteur. ' month');
+					else $object_newdate = $object_date_to_clone[$i]->modify('+' . $frequency * $compteur. ' month');
 
-                $TNewDates[] = $object_newdate->getTimestamp();
+					$TNewDates[] = $object_newdate->getTimestamp();
+				}
             }
         }
 
