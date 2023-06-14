@@ -10,7 +10,10 @@ class multiclone
 		$form = new Form($db);
 
 			$elem = $object->element;
-            $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', '(s.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3))', '', 0, 0, array(), 0, 'minwidth300'));
+			$filter = 's.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3)';
+			if (version_compare(DOL_VERSION, '18', '>=')) $filter = '(s.client:IN:1,'.($object->element === 'propal' ? '2,' : '').'3)';
+
+            $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', $filter, '', 0, 0, array(), 0, 'minwidth300'));
             if ($elem == 'salary' || $elem == 'chargesociales'){
                 $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'userid', 1));
             }
