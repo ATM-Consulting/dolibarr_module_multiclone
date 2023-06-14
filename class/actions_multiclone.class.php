@@ -133,7 +133,6 @@ class Actionsmulticlone
 
                 }
                 print multiclone::getFormConfirmClone($object);
-
                 return 1;
             }
         }
