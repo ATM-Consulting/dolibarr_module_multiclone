@@ -184,7 +184,7 @@ class multiclone
                         $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
                         $order_clone->date_commande = $TNewDates[0];
-                        $order_clone->delivery_date = $TNewDates[1];
+                        $order_clone->delivery_date = $TNewDates[1] ?? null;
 
                         //On définit le tiers concerné par le/les clones
                         $order_clone->socid = $socid;
