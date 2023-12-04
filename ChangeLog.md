@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 
+## Version 1.3
+
+- NEW : compatibilité dolibarr V18 - *04/12/2023* - 1.3.0
+
 ## Version 1.2
 
 - FIX : Compat V18 *14/06/2023* - 1.2.5
