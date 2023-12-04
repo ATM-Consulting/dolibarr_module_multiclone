@@ -125,7 +125,7 @@ if (floatval(DOL_VERSION) >= 16.0 && $conf->salaries->enabled) {
 }
 else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (!getDolGlobalString('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE')) {
+if (!getDolGlobalInt('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE')) {
     dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);
 }
 
@@ -214,7 +214,7 @@ function _printInputFormPart($confkey, $title = false, $desc = '', $metas = [], 
 
     if($type != 'textarea') {
         $defaultMetas['type'] = 'text';
-        $defaultMetas['value'] = $conf->global->{$confkey};
+        $defaultMetas['value'] = getDolGlobalString($confkey);
     }
 
     $metas = array_merge($defaultMetas, $metas);
@@ -247,7 +247,7 @@ function _printInputFormPart($confkey, $title = false, $desc = '', $metas = [], 
 
     print '<input type="hidden" name="action" value="setModuleOptions">';
     if($type == 'textarea') {
-        print '<textarea '.$metascompil.'  >'.dol_htmlentities($conf->global->{$confkey}).'</textarea>';
+        print '<textarea '.$metascompil.'  >'.dol_htmlentities(getDolGlobalString($confkey)).'</textarea>';
     }
     else if($type == 'input') {
         print '<input '.$metascompil.'  />';
