@@ -99,28 +99,28 @@ _printOnOff('MULTICLONE_VALIDATE_INVOICE', $langs->trans("ValidateInvoiceOnClone
 
 _setupPrintTitle($langs->trans("AdvancedParameters"));
 
-if ($conf->propal->enabled) {
+if (!empty($conf->propal->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_PROPAL', $langs->trans("ActivateForObject", $langs->trans('Proposals')));
 }
 
-if ($conf->commande->enabled) {
+if (!empty($conf->commande->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_ORDER', $langs->trans("ActivateForObject", $langs->trans('Orders')));
 }
 
-if ($conf->facture->enabled) {
+if (!empty($conf->facture->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_INVOICE', $langs->trans("ActivateForObject", $langs->trans('Invoices')));
 }
 
-if ($conf->fournisseur->enabled) {
+if (!empty($conf->fournisseur->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) >= 16.0 && $conf->tax->enabled) {
+if (floatval(DOL_VERSION) >= 16.0 && !empty($conf->tax->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
 else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (floatval(DOL_VERSION) >= 16.0 && $conf->salaries->enabled) {
+if (floatval(DOL_VERSION) >= 16.0 && !empty($conf->salaries->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
 }
 else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
