@@ -53,6 +53,7 @@ ConfirmClonecommande=Êtes-vous sûr(e) de vouloir cloner la commande <b>%s</b> 
 ConfirmClonefacture=Êtes-vous sûr(e) de vouloir cloner la facture <b>%s</b> ?
 ConfirmCloneinvoice_supplier=Êtes-vous sûr(e) de vouloir cloner la facture fournisseur <b>%s</b> ?
 ConfirmClonechargesociales=Êtes-vous sûr(e) de vouloir cloner la charge sociale <b>%s</b> ?
+ConfirmClonesalary=Êtes-vous sûr(e) de vouloir cloner le salaire <b>%s</b> ?
 
 SelectUser=Sélectionner un utilisateur
 
