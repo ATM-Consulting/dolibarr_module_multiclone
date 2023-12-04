@@ -13,9 +13,10 @@ class multiclone
 			$filter = 's.client IN(1,'.($object->element === 'propal' ? '2,' : '').'3)';
 			if (version_compare(DOL_VERSION, '18', '>=')) $filter = '(s.client:IN:1,'.($object->element === 'propal' ? '2,' : '').'3)';
 
-            $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', $filter, '', 0, 0, array(), 0, 'minwidth300'));
             if ($elem == 'salary' || $elem == 'chargesociales'){
                 $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'userid', 1));
+            } else {
+                $other_question = array('type' => 'other', 'name' => 'socid', 'label' => $langs->trans("SelectThirdParty"), 'value' => $form->select_company($object->socid, 'socid', $filter, '', 0, 0, array(), 0, 'minwidth300'));
             }
 			$formquestion = array(
 				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="' . getDolGlobalInt('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE').'">'),
