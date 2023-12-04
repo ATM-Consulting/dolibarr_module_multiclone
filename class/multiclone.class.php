@@ -18,7 +18,7 @@ class multiclone
                 $other_question = array('type' => 'other', 'name' => 'userid', 'label' => $langs->trans("SelectUser"), 'value' => $form->select_dolusers($object->fk_user, 'userid', 1));
             }
 			$formquestion = array(
-				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="'.$conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE.'">'),
+				array('type' => 'other', 'name' => 'cloneqty', 'label' => $langs->trans("CloneQty"), 'value' => '<input type="number" style="width: 100px;" id="cloneqty" step="1" min="1" max="' . getDolGlobalString('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE').'">'),
 				array('type' => 'other', 'name' => 'frequency', 'label' => $langs->trans("CloneFrequency"), 'value' => '<input type="number" style="width: 100px;" id="frequency" step="1" min="1">'),
                 $other_question
             );
@@ -121,7 +121,7 @@ class multiclone
         $error = 0;
         $langs->load('multiclone@multiclone');
 
-        if (! empty($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE) && $qty > $conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE) {
+        if (getDolGlobalString('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE') && $qty > $conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE) {
             setEventMessage($langs->trans('MulticloneMaxAuthorizedValueReached', $qty, $conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE), 'errors');
             header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id);
             exit;
@@ -157,7 +157,7 @@ class multiclone
                         //On définit le tiers concerné par le/les clones
                         $propal_clone->socid = $socid;
 
-                        if (! empty($conf->global->MULTICLONE_VALIDATE_PROPAL)) $propal_clone->valid($user);
+                        if (getDolGlobalString('MULTICLONE_VALIDATE_PROPAL')) $propal_clone->valid($user);
 
                         $res_update = $propal_clone->update($user);
                         if ($res_update<0) {
@@ -189,7 +189,7 @@ class multiclone
                         //On définit le tiers concerné par le/les clones
                         $order_clone->socid = $socid;
 
-                        if (! empty($conf->global->MULTICLONE_VALIDATE_ORDER)) $order_clone->valid($user);
+                        if (getDolGlobalString('MULTICLONE_VALIDATE_ORDER')) $order_clone->valid($user);
 
                         $res_update = $order_clone->update($user);
                         if ($res_update<0) {
@@ -224,7 +224,7 @@ class multiclone
                         $facture_clone->cond_reglement_id = $facture->cond_reglement_id;
                         $facture_clone->mode_reglement_id = $facture->mode_reglement_id;
 
-                        if(! empty($conf->global->MULTICLONE_VALIDATE_INVOICE)) $facture_clone->validate($user);
+                        if(getDolGlobalString('MULTICLONE_VALIDATE_INVOICE')) $facture_clone->validate($user);
 
                         $res_update = $facture_clone->update($user);
                         if ($res_update<0) {

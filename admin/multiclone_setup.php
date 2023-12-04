@@ -125,7 +125,7 @@ if (floatval(DOL_VERSION) >= 16.0 && $conf->salaries->enabled) {
 }
 else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (empty ($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE)) {
+if (!getDolGlobalString('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE')) {
     dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);
 }
 

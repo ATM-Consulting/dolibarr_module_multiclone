@@ -69,12 +69,12 @@ class Actionsmulticlone extends CommonHookActions
     function doActions($parameters, &$object, &$action, $hookmanager) {
         global $conf, $langs, $db;
 
-        if ((in_array('ordercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_ORDER))
-            || (in_array('invoicecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_INVOICE))
-            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE))
-            || (in_array('propalcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_PROPAL))
-            || (in_array('salarycard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SALARY))
-            || (in_array('taxcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX))) {
+        if ((in_array('ordercard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_ORDER'))
+            || (in_array('invoicecard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_INVOICE'))
+            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE'))
+            || (in_array('propalcard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_PROPAL'))
+            || (in_array('salarycard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_SALARY'))
+            || (in_array('taxcard', explode(':', $parameters['context'])) && getDolGlobalString('MULTICLONE_ACTIVATE_FOR_TAX'))) {
             // Passage à l'action multiclone dès lors que l'action clone est encleché
             // Pas de traitement de l'action clone : remplacé par le traitement de l'action multiclone
             if ($action === 'clone') {
