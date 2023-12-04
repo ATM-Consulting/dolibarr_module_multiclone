@@ -115,15 +115,23 @@ if (!empty($conf->fournisseur->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) >= 16.0 && !empty($conf->tax->enabled)) {
+if (floatval(DOL_VERSION) < 16.0) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
+} else if(empty($conf->tax->enabled)) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureRequireModTaxEnabled'));
+} else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
-else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (floatval(DOL_VERSION) >= 16.0 && !empty($conf->salaries->enabled)) {
+if (floatval(DOL_VERSION) < 16.0) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
+} else if(empty($conf->salaries->enabled)) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureRequireModSalariesEnabled'));
+} else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
 }
-else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
+
+
 
 if (!getDolGlobalInt('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE')) {
     dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);

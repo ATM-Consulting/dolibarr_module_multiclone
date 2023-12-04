@@ -69,3 +69,5 @@ ValidateInvoiceOnClone = Passer au statut "validé" les factures lors du clonage
 ActivateForObject = Activer Multiclone sur les %s
 MaxAuthorizedCloneValue = Valeur maximale de clones autorisée (100 par défaut)
 FeatureNotAvailableForThisDolVersion = Fonctionnalité non disponible avec votre version actuelle de Dolibarr. </br> Nécessite la version 16.0 de Dolibarr.
+FeatureRequireModSalariesEnabled=Nécessite que le module Salaires soit activé.
+FeatureRequireModTaxEnabled=Nécessite que le module Taxes soit activé.

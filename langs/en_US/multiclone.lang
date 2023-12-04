@@ -5,3 +5,7 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 
 multicloneSetup = multiclone module setup
 multicloneAbout = About multiclone
+
+
+FeatureRequireModSalariesEnabled=Require Salary module to be active.
+FeatureRequireModTaxEnabled=Require Tax module to be active.
