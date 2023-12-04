@@ -99,33 +99,41 @@ _printOnOff('MULTICLONE_VALIDATE_INVOICE', $langs->trans("ValidateInvoiceOnClone
 
 _setupPrintTitle($langs->trans("AdvancedParameters"));
 
-if ($conf->propal->enabled) {
+if (!empty($conf->propal->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_PROPAL', $langs->trans("ActivateForObject", $langs->trans('Proposals')));
 }
 
-if ($conf->commande->enabled) {
+if (!empty($conf->commande->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_ORDER', $langs->trans("ActivateForObject", $langs->trans('Orders')));
 }
 
-if ($conf->facture->enabled) {
+if (!empty($conf->facture->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_INVOICE', $langs->trans("ActivateForObject", $langs->trans('Invoices')));
 }
 
-if ($conf->fournisseur->enabled) {
+if (!empty($conf->fournisseur->enabled)) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) >= 16.0 && $conf->tax->enabled) {
+if (floatval(DOL_VERSION) < 16.0) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
+} else if(empty($conf->tax->enabled)) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureRequireModTaxEnabled'));
+} else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
-else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (floatval(DOL_VERSION) >= 16.0 && $conf->salaries->enabled) {
+if (floatval(DOL_VERSION) < 16.0) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
+} else if(empty($conf->salaries->enabled)) {
+    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureRequireModSalariesEnabled'));
+} else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
 }
-else _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
 
-if (empty ($conf->global->MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE)) {
+
+
+if (!getDolGlobalInt('MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE')) {
     dolibarr_set_const($db, 'MULTICLONE_MAX_AUTHORIZED_CLONE_VALUE', 100);
 }
 
@@ -214,7 +222,7 @@ function _printInputFormPart($confkey, $title = false, $desc = '', $metas = [], 
 
     if($type != 'textarea') {
         $defaultMetas['type'] = 'text';
-        $defaultMetas['value'] = $conf->global->{$confkey};
+        $defaultMetas['value'] = getDolGlobalString($confkey);
     }
 
     $metas = array_merge($defaultMetas, $metas);
@@ -247,7 +255,7 @@ function _printInputFormPart($confkey, $title = false, $desc = '', $metas = [], 
 
     print '<input type="hidden" name="action" value="setModuleOptions">';
     if($type == 'textarea') {
-        print '<textarea '.$metascompil.'  >'.dol_htmlentities($conf->global->{$confkey}).'</textarea>';
+        print '<textarea '.$metascompil.'  >'.dol_htmlentities(getDolGlobalString($confkey)).'</textarea>';
     }
     else if($type == 'input') {
         print '<input '.$metascompil.'  />';

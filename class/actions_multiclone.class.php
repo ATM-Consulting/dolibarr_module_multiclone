@@ -27,7 +27,9 @@
 /**
  * Class Actionsmulticlone
  */
-class Actionsmulticlone
+require_once __DIR__ . '/../backport/v19/core/class/commonhookactions.class.php';
+
+class Actionsmulticlone extends multiclone\RetroCompatCommonHookActions
 {
 
 	/**
@@ -65,12 +67,12 @@ class Actionsmulticlone
     function doActions($parameters, &$object, &$action, $hookmanager) {
         global $conf, $langs, $db;
 
-        if ((in_array('ordercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_ORDER))
-            || (in_array('invoicecard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_INVOICE))
-            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE))
-            || (in_array('propalcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_PROPAL))
-            || (in_array('salarycard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_SALARY))
-            || (in_array('taxcard', explode(':', $parameters['context'])) && !empty($conf->global->MULTICLONE_ACTIVATE_FOR_TAX))) {
+        if ((in_array('ordercard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_ORDER'))
+            || (in_array('invoicecard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_INVOICE'))
+            || (in_array('invoicesuppliercard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE'))
+            || (in_array('propalcard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_PROPAL'))
+            || (in_array('salarycard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_SALARY'))
+            || (in_array('taxcard', explode(':', $parameters['context'])) && getDolGlobalInt('MULTICLONE_ACTIVATE_FOR_TAX'))) {
             // Passage à l'action multiclone dès lors que l'action clone est encleché
             // Pas de traitement de l'action clone : remplacé par le traitement de l'action multiclone
             if ($action === 'clone') {
