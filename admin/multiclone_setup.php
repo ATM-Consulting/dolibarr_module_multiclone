@@ -115,17 +115,13 @@ if (isModEnabled('fournisseur')) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) < 16.0) {
-    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
-} else if(!isModEnabled('tax')) {
+if(!isModEnabled('tax')) {
     _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureRequireModTaxEnabled'));
 } else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
 
-if (floatval(DOL_VERSION) < 16.0) {
-    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
-} else if(!isModEnabled('salaries')) {
+if(!isModEnabled('salaries')) {
     _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureRequireModSalariesEnabled'));
 } else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
