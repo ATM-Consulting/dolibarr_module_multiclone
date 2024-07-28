@@ -44,25 +44,25 @@
 	[onshow;block=begin;when [user.rights.multiclone.write;noerr]=1]
 	
 		[onshow;block=begin;when [object.status]=[Tmulticlone.STATUS_DRAFT]]
-			
-			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=validate" class="butAction">[langs.transnoentities(Validate)]</a></div>
-			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=edit" class="butAction">[langs.transnoentities(Modify)]</a></div>
-			
+
+			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=validate$token=[newToken()]" class="butAction">[langs.transnoentities(Validate)]</a></div>
+			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=edit$token=[newToken()]" class="butAction">[langs.transnoentities(Modify)]</a></div>
+
 		[onshow;block=end]
 		
 		[onshow;block=begin;when [object.status]=[Tmulticlone.STATUS_VALIDATED]]
-			
-			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=modif" class="butAction">[langs.transnoentities(Reopen)]</a></div>
-			
+
+			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=modif$token=[newToken()]" class="butAction">[langs.transnoentities(Reopen)]</a></div>
+
 		[onshow;block=end]
-		
-		<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=clone" class="butAction">[langs.transnoentities(ToClone)]</a></div>
-		
+
+		<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=clone$token=[newToken()]" class="butAction">[langs.transnoentities(ToClone)]</a></div>
+
 		<!-- '-+' est l'équivalent d'un signe '<' (TBS oblige) -->
 		[onshow;block=begin;when [object.status]-+[Tmulticlone.STATUS_REFUSED]]
-			
-			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=delete" class="butActionDelete">[langs.transnoentities(Delete)]</a></div>
-			
+
+			<div class="inline-block divButAction"><a href="[view.urlcard]?id=[object.getId()]&action=delete$token=[newToken()]" class="butActionDelete">[langs.transnoentities(Delete)]</a></div>
+
 		[onshow;block=end]
 		
 	[onshow;block=end]
