@@ -99,33 +99,29 @@ _printOnOff('MULTICLONE_VALIDATE_INVOICE', $langs->trans("ValidateInvoiceOnClone
 
 _setupPrintTitle($langs->trans("AdvancedParameters"));
 
-if (!empty($conf->propal->enabled)) {
+if (isModEnabled('propal')) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_PROPAL', $langs->trans("ActivateForObject", $langs->trans('Proposals')));
 }
 
-if (!empty($conf->commande->enabled)) {
+if (isModEnabled('commande')) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_ORDER', $langs->trans("ActivateForObject", $langs->trans('Orders')));
 }
 
-if (!empty($conf->facture->enabled)) {
+if (isModEnabled('facture')) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_INVOICE', $langs->trans("ActivateForObject", $langs->trans('Invoices')));
 }
 
-if (!empty($conf->fournisseur->enabled)) {
+if (isModEnabled('fournisseur')) {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SUPPLIER_INVOICE', $langs->trans("ActivateForObject", $langs->trans('BillsSuppliers')));
 }
 
-if (floatval(DOL_VERSION) < 16.0) {
-    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
-} else if(empty($conf->tax->enabled)) {
+if(!isModEnabled('tax')) {
     _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')), '', array(), '', $langs->trans('FeatureRequireModTaxEnabled'));
 } else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_TAX', $langs->trans("ActivateForObject", $langs->trans('SocialContributions')));
 }
 
-if (floatval(DOL_VERSION) < 16.0) {
-    _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureNotAvailableForThisDolVersion'));
-} else if(empty($conf->salaries->enabled)) {
+if(!isModEnabled('salaries')) {
     _printInputFormPart('', $langs->trans("ActivateForObject", $langs->trans('Salaries')), '', array(), '', $langs->trans('FeatureRequireModSalariesEnabled'));
 } else {
     _printOnOff('MULTICLONE_ACTIVATE_FOR_SALARY', $langs->trans("ActivateForObject", $langs->trans('Salaries')));
