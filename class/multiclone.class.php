@@ -316,7 +316,7 @@ class multiclone
                     $TNewDates = self::calcNewDate($TDatesToClone, $frequency, $compteur);
 
                     $charges->date_ech = $TNewDates[0];
-                    $charges->periode = $TNewDates[1];
+                    $charges->period = $TNewDates[1];
 
                     //On définit le salarié concerné par le/les clones
                     $charges->fk_user = $socid;
