@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 ## Release 1.4
 
+- FIX : Compat v21 : Using deprecated "->periode" change to "->period" - **05/02/2025** - 1.4.1
 - FIX: Compat v20  
   Changed Dolibarr compatibility range to 16 min - 20 max - *28/07/2024* - 1.4.0
 
