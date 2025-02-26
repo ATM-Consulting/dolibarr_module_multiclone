@@ -52,7 +52,7 @@ class Actionsmulticlone extends multiclone\RetroCompatCommonHookActions
 	 */
 	public function __construct()
 	{
-		
+
 	}
 
     /**
@@ -81,7 +81,7 @@ class Actionsmulticlone extends multiclone\RetroCompatCommonHookActions
                 dol_include_once('/multiclone/class/multiclone.class.php');
 
                 $qty = GETPOST('cloneqty', 'int');
-                $frequency = GETPOST('frequency', 'int');
+                $frequency = !empty(GETPOSTINT('frequency')) ?? 1;
                 $socid = GETPOST('socid', 'int');
                 if (empty($socid)){
                     $idToSend = GETPOST('userid', 'int');
