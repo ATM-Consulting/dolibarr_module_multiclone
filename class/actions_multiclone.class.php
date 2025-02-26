@@ -52,7 +52,7 @@ class Actionsmulticlone extends multiclone\RetroCompatCommonHookActions
 	 */
 	public function __construct()
 	{
-		
+
 	}
 
     /**
@@ -82,14 +82,14 @@ class Actionsmulticlone extends multiclone\RetroCompatCommonHookActions
 
                 $qty = GETPOST('cloneqty', 'int');
                 $frequency = GETPOST('frequency', 'int');
-                $socid = GETPOST('socid', 'int');
-                if (empty($socid)){
-                    $idToSend = GETPOST('userid', 'int');
-                } else {
-                    $idToSend = $socid;
+				if ($frequency === '' || !is_numeric($frequency)) {
+					$frequency = 1;
+				}
+                if (empty($object->thirdparty->id)){
+                    setEventMessage($langs->trans("ErrorTryToCloneWithoutThirdparty"), 'errors');
+					dol_syslog($langs->trans("ErrorTryToCloneWithoutThirdparty"),LOG_ERR);
                 }
-
-                multiclone::multiCreateFromClone($object, $qty, $frequency, $idToSend);
+                multiclone::multiCreateFromClone($object, $qty, $frequency, $object->thirdparty->id);
             }
         }
     }

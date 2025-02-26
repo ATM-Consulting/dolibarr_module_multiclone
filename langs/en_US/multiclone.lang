@@ -9,3 +9,5 @@ multicloneAbout = About multiclone
 
 FeatureRequireModSalariesEnabled=Require Salary module to be active.
 FeatureRequireModTaxEnabled=Require Tax module to be active.ConfirmClonesalary
+
+ErrorTryToCloneWithoutThirdparty = You tried to clone without thirdparty

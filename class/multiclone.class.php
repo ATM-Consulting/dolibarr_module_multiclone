@@ -157,7 +157,7 @@ class multiclone
 
                         //On définit le tiers concerné par le/les clones
                         $propal_clone->socid = $socid;
-
+						$propal_clone->thirdparty = $object->thirdparty;
                         if (getDolGlobalInt('MULTICLONE_VALIDATE_PROPAL')) $propal_clone->valid($user);
 
                         $res_update = $propal_clone->update($user);
